@@ -4,6 +4,8 @@ const statusText={waiting:'Ожидает ответа',clarify:'Нужно ут
 const storageKey='rnch-client-review-v1';
 let answers={};
 try{answers=JSON.parse(localStorage.getItem(storageKey)||'{}')||{};}catch(e){document.getElementById('storage-note').textContent='Сохранение в браузере недоступно. Скачайте ответы перед закрытием страницы.';}
+const confirmedAnswers={"alcohol": "Нет. Служба не выезжает при алкогольном опьянении или подозрении на отравление алкоголем.", "drugs": "Нет. Служба не выезжает при наркотическом опьянении или подозрении на отравление психоактивными веществами."};
+for(const [id,answer] of Object.entries(confirmedAnswers)){answers[id]={answer,status:'approved'};}
 function updateProgress(){const approved=topicIds.filter(id=>answers[id]?.status==='approved').length;document.getElementById('progress').textContent=`Согласовано: ${approved} из ${topicIds.length}`;}
 function renderStatus(id){const el=document.querySelector(`[data-status-label="${id}"]`),status=answers[id]?.status||'waiting';el.textContent=statusText[status]||statusText.waiting;el.className='status '+status;updateProgress();}
 function persist(id){const answer=document.querySelector(`[data-answer="${id}"]`).value,status=document.querySelector(`[data-status="${id}"]`).value;answers[id]={answer,status};try{localStorage.setItem(storageKey,JSON.stringify(answers));document.querySelector(`[data-saved="${id}"]`).textContent='Сохранено в этом браузере';}catch(e){document.querySelector(`[data-saved="${id}"]`).textContent='Скачайте ответы для сохранения';}renderStatus(id);}
